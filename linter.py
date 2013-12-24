@@ -11,10 +11,10 @@
 """This module exports the Pylint plugin class."""
 
 
-from SublimeLinter.lint import Linter
+from SublimeLinter.lint import PythonLinter
 
 
-class Pylint(Linter):  # pylint: disable=R0903
+class Pylint(PythonLinter):  # pylint: disable=R0903
 
     """Provides an interface to pylint."""
 
@@ -33,4 +33,5 @@ class Pylint(Linter):  # pylint: disable=R0903
         '--enable=,': '',
         '--rcfile=': ''
     }
+    inline_overrides = ('enable', 'disable')
     check_version = True

@@ -9,14 +9,24 @@ SublimeLinter 3 must be installed in order to use this plugin. If SublimeLinter 
 ### Linter installation
 Before using this plugin, you must ensure that `pylint` is installed on your system. To install `pylint`, do the following:
 
-1. Install Python.
+1. Install [Python](http://python.org) and [pip](http://www.pip-installer.org/en/latest/installing.html). If you plan to code in Python 3, you will need to install `pip` for Python 3 as well.
 
-1. Install `pylint` by typing the following in a terminal:
-   ```
-   pip install pylint
+1. Install `pylint` by typing the following in a terminal, replacing ‘x’ with the minor version installed on your system:
+   ```bash
+   # For python 2.x
+   [sudo] pip-2.x install pylint
+
+   # For python 3.x
+   [sudo] pip-3.x install pylint
+
+   # On Windows, for python 2.x
+   c:\Python2x\Scripts\pip.exe install pylint
+
+   # On Windows, for python 3.x
+   c:\Python3x\Scripts\pip.exe install pylint
    ```
 
-Once pylint is installed, you can proceed to install the SublimeLinter-pylint plugin if it is not yet installed.
+Once `pylint` is installed, you can proceed to install the SublimeLinter-pylint plugin if it is not yet installed.
 
 ### Plugin installation
 Please use [Package Control](https://sublime.wbond.net/installation) to install the linter plugin. This will ensure that the plugin will be updated when new versions are available. If you want to install from source so you can modify the source code, you probably know what you are doing so we won’t cover that here.
@@ -34,13 +44,34 @@ In addition to the standard SublimeLinter settings, SublimeLinter-pylint provide
 
 |Setting|Description|Inline Setting|Inline Override|
 |:------|:----------|:------------:|:-------------:|
-|disable| Disable the message, report, category or checker with the given comma-separated id(s)| | |
-|enable| Enable the message, report, category or checker with the given comma-separated id(s)| | |
+|disable| Disable the message, report, category or checker with the given comma-separated id(s)| |&#10003;|
+|enable| Enable the message, report, category or checker with the given comma-separated id(s)| |&#10003;|
 |rcfile| Absolute path to a pylint configuration file| | |
+
+### Examples
+
+For `enable` and `disable`, you can use a single string (ex: ``"F0401,W0232,C0301"``), or an array of strings if not inline (ex: ``["F0401", "W0232"]``).
+
+For inline settings, you can put on the first two lines of the file:
+```python
+# [SublimeLinter pylint-disable: C0301,-W0232]
+```
+
+In your project or user settings, you can set:
+```json
+// ...
+"linters": {
+    "pylint": {
+        // ...
+        "disable": "F0401,W0232,C0301",
+        "enable": ""
+    },
+}
+```
 
 ## Notes on Pylint and errors
 
-Remember that you can locally disable errors by putting a comment similar to ``  # pylint: disable=R0903`` at the end of the incriminated lines. 
+Remember that you can locally disable errors by putting a comment similar to ``  # pylint: disable=R0903`` at the end of the offending lines.
 By doing so, you will generate a new error called ``I0011``, that you may want to globally ignore through your settings.
 
 ## Contributing
