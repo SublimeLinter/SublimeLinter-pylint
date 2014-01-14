@@ -14,19 +14,26 @@
 from SublimeLinter.lint import PythonLinter
 
 
-class Pylint(PythonLinter):  # pylint: disable=R0903
+class Pylint(PythonLinter):
 
     """Provides an interface to pylint."""
 
     syntax = 'python'
     cmd = (
         'pylint@python',
+        # '--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}',
+        # only usable if pylint is >= 1.0
+        # so keeping '--output-format=parseable' for now
         '--output-format=parseable',  # easiest format to parse
         '--module-rgx=.*',  # don't check the module name
         '--reports=n',      # remove tables
         '--persistent=n',   # don't save the old score (no sense for temp)
     )
-    regex = r'^.*?:(?P<line>\d+): \[(?:(?P<error>[RFE])|(?P<warning>[CIW]))(.*?)\] (?P<message>.*)'
+    regex = (
+        r'^.*?:(?P<line>\d+): '
+        r'\[(?:(?P<error>[RFE])|(?P<warning>[CIW]))(.*?)\] '
+        r'(?P<message>.*)'
+    )
     tempfile_suffix = '.py'
     defaults = {
         '--disable=,': '',
