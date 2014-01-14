@@ -1,7 +1,7 @@
 SublimeLinter-pylint
 =========================
 
-This linter plugin for [SublimeLinter][doc] provides an interface to [pylint](http://www.pylint.org/). It will be used with files that have the “python” syntax.
+This linter plugin for [SublimeLinter][docs] provides an interface to [pylint](http://www.pylint.org/). It will be used with files that have the “python” syntax.
 
 ## Installation
 SublimeLinter 3 must be installed in order to use this plugin. If SublimeLinter 3 is not installed, please follow the instructions [here][installation].
