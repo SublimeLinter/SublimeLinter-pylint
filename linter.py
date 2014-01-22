@@ -11,7 +11,7 @@
 """This module exports the Pylint plugin class."""
 
 
-from SublimeLinter.lint import PythonLinter
+from SublimeLinter.lint import PythonLinter, util
 
 
 class Pylint(PythonLinter):
@@ -21,20 +21,23 @@ class Pylint(PythonLinter):
     syntax = ('python', 'python django')
     cmd = (
         'pylint@python',
-        # '--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}',
-        # only usable if pylint is >= 1.0
-        # so keeping '--output-format=parseable' for now
-        '--output-format=parseable',  # easiest format to parse
+        '--msg-template=\'{line}:{column}:{msg_id}: {msg}\'',
         '--module-rgx=.*',  # don't check the module name
         '--reports=n',      # remove tables
         '--persistent=n',   # don't save the old score (no sense for temp)
     )
+    version_cmd = '--version'
+    version_re = r'^pylint (?P<version>\d+\.\d+\.\d+),'
+    version_requirement = '>=1.0'
     regex = (
-        r'^.*?:(?P<line>\d+): '
-        r'\[(?:(?P<error>[RFE])|(?P<warning>[CIW]))(.*?)\] '
+        r'^(?P<line>\d+):(?P<col>\d+): '
+        r'(?:(?P<error>[RFE])|(?P<warning>[CIW]))\d+:'
         r'(?P<message>.*)'
     )
+    multiline = True
+    line_col_base = (1, 0)
     tempfile_suffix = '.py'
+    error_stream = util.STREAM_STDOUT  # ignore missing config file message
     defaults = {
         '--disable=,': '',
         '--enable=,': '',
@@ -42,3 +45,19 @@ class Pylint(PythonLinter):
     }
     inline_overrides = ('enable', 'disable')
     check_version = True
+
+    def split_match(self, match):
+        """
+        Return the components of the error message.
+
+        We override this to deal with the idiosyncracies of pylint's error messages.
+
+        """
+
+        match, line, col, error, warning, message, near = super().split_match(match)
+
+        if match:
+            if col == 0:
+                col = None
+
+        return match, line, col, error, warning, message, near
