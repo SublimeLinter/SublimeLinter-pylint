@@ -30,7 +30,7 @@ class Pylint(PythonLinter):
     version_re = r'^pylint (?P<version>\d+\.\d+\.\d+),'
     version_requirement = '>=1.0'
     regex = (
-        r'^(?P<line>\d+):(?P<col>\d+): '
+        r'^(?P<line>\d+):(?P<col>\d+):'
         r'(?:(?P<error>[RFE])|(?P<warning>[CIW]))\d+:'
         r'(?P<message>.*)'
     )
