@@ -1,6 +1,8 @@
 SublimeLinter-pylint
 =========================
 
+[![Build Status](https://khancdn.eu/badges.php?service=https%3A%2F%2Ftravis-ci.org%2FSublimeLinter%2FSublimeLinter-pylint.png%3Fbranch%3Dmaster)](https://travis-ci.org/SublimeLinter/SublimeLinter-pylint)
+
 This linter plugin for [SublimeLinter][docs] provides an interface to [pylint](http://www.pylint.org/). It will be used with files that have the “python” syntax.
 
 ## Installation
