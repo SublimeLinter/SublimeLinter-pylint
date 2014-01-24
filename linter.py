@@ -54,16 +54,22 @@ class Pylint(PythonLinter):
         'C0202': r"Class method (?P<near>.*) should have",
         'C0203': r"Metaclass method (?P<near>.*) should have",
         'C0204': r"Metaclass class method (?P<near>.*) should have",
-        'E0001': r'unknown encoding: (?P<near>.*)',
+        'E0001': r'unknown encoding: (?P<near>.*)',  # can also be 'invalid syntax', 'EOF in multi-line statement'
         'E0011': r"Unrecognized file option '(?P<near>.*)'",
         'E0012': r"Bad option value '(?P<near>.*)'",
         'E0108': r"Duplicate argument name (?P<near>.*) in function definition",
         'E0203': r"Access to member '(?P<near>.*)' before its definition",
+        'E0601': r"Using variable '(?P<near>.*)' before assignment",
         'E0603': r"Undefined variable name '(?P<near>.*)' in",
-        'E0701': r'Bad except clauses order \(.* is an ancestor class of (?P<near>.*)\)',
+        'E0611': r"No name '(?P<near>.*)' in module",
+        'E0701': r'Bad except clauses order \(.* is an ancestor class of (?P<near>.*)\)',  # may also be Bad except clauses order (empty except clause should always appear last)
         'E0712': r"Catching an exception which doesn't inherit from BaseException: (?P<near>.*)",
         'E1101': r"has no '(?P<near>.*)' member",
+        'E1102': r"(?P<near>.*) is not callable",
+        'E1123': r"Passing unexpected keyword argument '(?P<near>.*)' in function call",
+        'E1124': r"Parameter '(?P<near>.*)' passed as both positional and keyword argument",
         'E1310': r"Suspicious argument in \S+\.(?P<near>.*) call",
+        'F0401': r"Unable to import '(?P<near>.*)'",
         'I0010': r"Unable to consider inline option '(?P<near>.*)'",
         'I0011': r"Locally disabling (?P<near>.*)",
         'I0012': r"Locally enabling (?P<near>.*)",
@@ -73,6 +79,7 @@ class Pylint(PythonLinter):
         'W0211': r"Static method with '(?P<near>.*)' as first argument",
         'W0212': r"Access to a protected member (?P<near>.*) of a client class",
         'W0402': r"Uses of a deprecated module '(?P<near>.*)'",
+        'W0403': r"Relative import '(?P<near>.*)', should be",
         'W0404': r"Reimport '(?P<near>.*)'",
         'W0511': r"(?P<near>.*)",
         'W0512': r'Cannot decode using encoding ".*", unexpected byte at position (?P<col>\d+)',
@@ -84,8 +91,6 @@ class Pylint(PythonLinter):
         'W1401': r"Anomalous backslash in string: '(?P<near>.*)'",  # does not work with \o, ...
         'W1402': r"Anomalous Unicode escape in byte string: '(?P<near>.*)'",  # does not work with \u, \U
         'W1501': r'"(?P<near>.*)" is not a valid mode for open',
-        'E1124': r"Parameter '(?P<near>.*)' passed as both positional and keyword argument",
-        'E1123': r"Passing unexpected keyword argument '(?P<near>.*)' in function call",
 
         # does not work : 'l' is too short..
         # 'W0332': r'Use of "(?P<near>.*)" as long integer identifier',
@@ -94,22 +99,51 @@ class Pylint(PythonLinter):
     # some errors always relate to the same keyword.
     messages_near = {
         'C1001': 'class',  # adequately reported at column 0, converted to None
-        'W0410': '__future__',  # reported at column 0, converted to None
-        'W1201': '%',
-        'W0142': '*',
-        'W0331': '<>',
-        'W0231': '__init__',
         'E0100': '__init__',
         'E0101': '__init__',
-        'E1111': '=',
-        'W1111': '=',
         'E0106': 'return',
-        'W0234': '__iter__',  # or 'next'. TODO find a way to handle both
-        'E0711': 'NotImplemented',
-        'I0022': '-msg',  # 'disable-msg' or 'enable-msg'. TODO find a way to handle both
-        'I0014': 'disable',
         'E0235': '__exit__',
+        'E0711': 'NotImplemented',
+        'E1111': '=',
+        'I0014': 'disable',
+        'I0022': '-msg',  # 'disable-msg' or 'enable-msg'. TODO find a way to handle both
+        'W0122': 'exec',
+        'W0142': '*',
+        'W0231': '__init__',
+        'W0234': '__iter__',  # or 'next'. TODO find a way to handle both
+        'W0301': ';',
+        'W0331': '<>',
+        'W0410': '__future__',  # reported at column 0, converted to None
+        'W1111': '=',
+        'W1201': '%',
     }
+
+    # already report the proper column:
+    # E0601, E0602, E0603
+
+    # confirmed to not report a column, and to not allow for 'near' extraction
+    messages_no_column = [
+        'C0111',
+        'C0301',
+        'C0302',
+        # 'C0326',  # special case
+        'C1001',
+        'E0001',
+        'E0222',
+        'E1121',
+        'E1125',
+        'I0013',
+        'R0902',
+        'R0903',
+        'R0911',
+        'R0912',
+        'R0914',
+        'W0104',
+        'W0105',
+        'W0199',
+        'W0232',
+        'W0312',
+    ]
 
     def split_match(self, match):
         """
