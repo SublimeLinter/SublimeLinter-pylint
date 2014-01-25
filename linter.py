@@ -18,7 +18,7 @@ class Pylint(PythonLinter):
 
     """Provides an interface to pylint."""
 
-    syntax = ('python', 'python django')
+    syntax = 'python'
     cmd = (
         'pylint@python',
         '--msg-template=\'{line}:{column}:{msg_id}: {msg}\'',
