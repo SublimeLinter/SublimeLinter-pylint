@@ -27,7 +27,7 @@ class Pylint(PythonLinter):
         '--persistent=n',   # don't save the old score (no sense for temp)
     )
     version_args = '--version'
-    version_re = r'^pylint.+ (?P<version>\d+\.\d+\.\d+),'
+    version_re = r'^pylint.* (?P<version>\d+\.\d+\.\d+),'
     version_requirement = '>= 1.0'
     regex = (
         r'^(?P<line>\d+):(?P<col>\d+):'
