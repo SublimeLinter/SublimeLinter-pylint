@@ -50,7 +50,7 @@ class Pylint(PythonLinter):
     # they are expected to define the 'near' group
     messages_re = {
         'C0102': r'Black listed name "(?P<near>.*)"',
-        'C0103': r'Invalid function name "(?P<near>.*)"',
+        'C0103': r'Invalid \S+ name "(?P<near>.*)"',
         'C0202': r"Class method (?P<near>.*) should have",
         'C0203': r"Metaclass method (?P<near>.*) should have",
         'C0204': r"Metaclass class method (?P<near>.*) should have",
@@ -59,11 +59,13 @@ class Pylint(PythonLinter):
         'E0012': r"Bad option value '(?P<near>.*)'",
         'E0108': r"Duplicate argument name (?P<near>.*) in function definition",
         'E0203': r"Access to member '(?P<near>.*)' before its definition",
-        'E0601': r"Using variable '(?P<near>.*)' before assignment",
-        'E0603': r"Undefined variable name '(?P<near>.*)' in",
+        # 'E0601': r"Using variable '(?P<near>.*)' before assignment",
+        # 'E0602': r"Undefined variable '(?P<near>.*)'",
+        # 'E0603': r"Undefined variable name '(?P<near>.*)' in",
         'E0611': r"No name '(?P<near>.*)' in module",
         'E0701': r'Bad except clauses order \(.* is an ancestor class of (?P<near>.*)\)',  # may also be Bad except clauses order (empty except clause should always appear last)
         'E0712': r"Catching an exception which doesn't inherit from BaseException: (?P<near>.*)",
+        'E1003': r"Bad first argument '(?P<near>.*)' given to super()",
         'E1101': r"has no '(?P<near>.*)' member",
         'E1102': r"(?P<near>.*) is not callable",
         'E1123': r"Passing unexpected keyword argument '(?P<near>.*)' in function call",
@@ -101,6 +103,8 @@ class Pylint(PythonLinter):
         'C1001': 'class',  # adequately reported at column 0, converted to None
         'E0100': '__init__',
         'E0101': '__init__',
+        'E0104': 'return',
+        'E0105': 'yield',
         'E0106': 'return',
         'E0235': '__exit__',
         'E0711': 'NotImplemented',
@@ -119,17 +123,26 @@ class Pylint(PythonLinter):
     }
 
     # already report the proper column:
-    # E0601, E0602, E0603
+    # E0601, E0602, E0603, E1004
+
+    # TODO
+    # C0112, C0321, C0325, E0102, E0103, E0107, E0202, E0211, E0213, E0221, E0604
+    # E0702, E0710, E1120
 
     # confirmed to not report a column, and to not allow for 'near' extraction
     messages_no_column = [
         'C0111',
+        'C0112',
         'C0301',
         'C0302',
+        'C0303',
+        'C0304',
         # 'C0326',  # special case
         'C1001',
         'E0001',
         'E0222',
+        'E1001',
+        'E1002',
         'E1121',
         'E1125',
         'I0013',
