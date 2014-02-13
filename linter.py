@@ -53,7 +53,6 @@ class Pylint(PythonLinter):
         We override this to deal with the idiosyncracies of pylint's error messages.
 
         """
-
         match, line, col, error, warning, message, near = super().split_match(match)
 
         if match:
