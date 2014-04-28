@@ -31,7 +31,7 @@ class Pylint(PythonLinter):
     version_requirement = '>= 1.0'
     regex = (
         r'^(?P<line>\d+):(?P<col>\d+):'
-        r'(?P<code>(?:(?P<error>[RFE])|(?P<warning>[CIW]))\d+): '
+        r'(?P<code>(?:(?P<error>[FE])|(?P<warning>[CIWR]))\d+): '
         r'(?P<message>.*)'
     )
     multiline = True
