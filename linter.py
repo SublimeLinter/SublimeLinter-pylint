@@ -11,7 +11,7 @@
 """This module exports the Pylint plugin class."""
 
 import re
-from SublimeLinter.lint import PythonLinter, util
+from SublimeLinter.lint import PythonLinter, util, persist
 
 
 class Pylint(PythonLinter):
@@ -36,7 +36,18 @@ class Pylint(PythonLinter):
     )
     multiline = True
     line_col_base = (1, 0)
-    tempfile_suffix = '.py'
+
+    @property
+    def tempfile_suffix(self):
+        """
+        Use the real file if possible
+        """
+        mode = persist.settings.get('lint_mode', 'background')
+        if mode in ('load/save', 'save only') or not self.view.is_dirty():
+            return '-'
+        else:
+            return 'py'
+
     error_stream = util.STREAM_STDOUT  # ignore missing config file message
     defaults = {
         # allows the user to say whether he wants to see the error code
