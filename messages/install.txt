@@ -7,4 +7,4 @@ INSTALLATION
 Before this plugin will activate, you *must* follow the installation
 instructions here:
 
-https://github.com/NotSqrt/SublimeLinter-pylint
+https://github.com/SublimeLinter/SublimeLinter-pylint
