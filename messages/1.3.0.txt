@@ -1,0 +1,13 @@
+SublimeLinter-pylint 1.3.0
+--------------------------
+
+ * New linting mode : the plugin will use the real file instead of a temp file
+whenever possible. The temp file will only be used on an unsaved file, when
+SublimeLinter is in background linting mode.
+This allows pylint to correctly detect relative imports.
+
+ * Whenever possible, errors are now positioned at the correct column
+
+ * New options :
+     - show-codes : display the pylint error code next to the message in the status bar
+     - paths : a list of paths that will be added to the sys.path for pylint to look for modules

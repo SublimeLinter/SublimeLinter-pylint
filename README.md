@@ -55,6 +55,8 @@ In addition to the standard SublimeLinter settings, SublimeLinter-pylint provide
 |disable| Disable the message, report, category or checker with the given comma-separated id(s)| |&#10003;|
 |enable| Enable the message, report, category or checker with the given comma-separated id(s)| |&#10003;|
 |rcfile| Absolute path to a pylint configuration file| | |
+|paths| A list of paths to be added to sys.path for pylint to find modules| | |
+|show-codes| Boolean that indicates whether you want the pylint code to be displayed in the status bar| | |
 
 ## Notes on Pylint and errors
 

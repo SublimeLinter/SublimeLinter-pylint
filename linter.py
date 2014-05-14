@@ -52,10 +52,12 @@ class Pylint(PythonLinter):
     defaults = {
         # allows the user to say whether he wants to see the error code
         'show-codes': False,
+        # paths to be added to sys.path through --init-hook
+        'paths': [],
         # options for pylint
         '--disable=,': '',
         '--enable=,': '',
-        '--rcfile=': ''
+        '--rcfile=': '',
     }
     inline_overrides = ('enable', 'disable')
     check_version = True
@@ -254,6 +256,21 @@ class Pylint(PythonLinter):
         'W1300',
         'W1301',
     ]
+
+    def build_args(self, settings):
+        """
+        Attach paths so pylint can find more modules
+        """
+        args = super().build_args(settings)
+        if settings.get('paths'):
+            init_hook = '''--init-hook=import sys;{}'''.format(
+                ''.join(
+                    'sys.path.append({!r});'.format(path)
+                    for path in settings.get('paths')
+                )
+            )
+            args.append(init_hook)
+        return args
 
     def split_match(self, match):
         """
