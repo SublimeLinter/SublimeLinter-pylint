@@ -39,9 +39,7 @@ class Pylint(PythonLinter):
 
     @property
     def tempfile_suffix(self):
-        """
-        Use the real file if possible
-        """
+        """Use the real file if possible."""
         mode = persist.settings.get('lint_mode', 'background')
         if mode in ('load/save', 'save only') or not self.view.is_dirty():
             return '-'
@@ -258,9 +256,7 @@ class Pylint(PythonLinter):
     ]
 
     def build_args(self, settings):
-        """
-        Attach paths so pylint can find more modules
-        """
+        """Attach paths so pylint can find more modules."""
         args = super().build_args(settings)
         if settings.get('paths'):
             init_hook = '''--init-hook=import sys;{}'''.format(
@@ -277,9 +273,7 @@ class Pylint(PythonLinter):
         Return the components of the error message.
 
         We override this to deal with the idiosyncracies of pylint's error messages.
-
         """
-
         match, line, col, error, warning, message, near = super().split_match(match)
 
         show_codes = self.get_merged_settings()['show-codes']
