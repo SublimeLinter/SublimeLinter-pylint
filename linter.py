@@ -58,6 +58,7 @@ class Pylint(PythonLinter):
         '--rcfile=': '',
     }
     inline_overrides = ('enable', 'disable')
+    module = 'pylint'
     check_version = True
 
     #############
