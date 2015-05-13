@@ -21,7 +21,7 @@ class Pylint(PythonLinter):
     syntax = 'python'
     cmd = (
         'pylint@python',
-        '--msg-template=\'{line}:{column}:{msg_id}: {msg}\'',
+        '--msg-template=\'{line}:{column}:{msg_id}: {msg} ({symbol})\'',
         '--module-rgx=.*',  # don't check the module name
         '--reports=n',      # remove tables
         '--persistent=n',   # don't save the old score (no sense for temp)
