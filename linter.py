@@ -15,7 +15,6 @@ from SublimeLinter.lint import PythonLinter, util, persist
 
 
 class Pylint(PythonLinter):
-
     """Provides an interface to pylint."""
 
     syntax = 'python'
