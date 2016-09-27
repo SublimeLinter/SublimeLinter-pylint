@@ -107,6 +107,7 @@ class Pylint(PythonLinter):
         'C0202': r"Class method (?P<near>.*) should have",
         'C0203': r"Metaclass method (?P<near>.*) should have",
         'C0204': r"Metaclass class method (?P<near>.*) should have",
+        'C0301': r"Line too long \(\d+/(?P<col>\d+)\)",
         'C0325': r"Unnecessary parens after '(?P<near>.*)' keyword",
         'E0001': r'unknown encoding: (?P<near>.*)',  # can also be 'invalid syntax', 'EOF in multi-line statement'
         'E0011': r"Unrecognized file option '(?P<near>.*)'",
@@ -197,7 +198,6 @@ class Pylint(PythonLinter):
     messages_no_column = [
         'C0111',  # mssing docstring for modules, classes and methods
         'C0112',  # empty docstring for modules, classes and methods
-        'C0301',
         'C0302',
         'C0303',
         'C0304',
