@@ -19,7 +19,7 @@ class Pylint(PythonLinter):
 
     syntax = 'python'
     cmd = (
-        'pylint@python',
+        'pylint',
         '--msg-template=\'{line}:{column}:{msg_id}: {msg}\'',
         '--module-rgx=.*',  # don't check the module name
         '--reports=n',      # remove tables
