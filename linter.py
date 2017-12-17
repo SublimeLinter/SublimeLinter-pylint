@@ -31,7 +31,7 @@ class Pylint(PythonLinter):
     regex = (
         r'^(?P<line>\d+):(?P<col>\d+):'
         r'(?P<code>(?:(?P<error>[FE])|(?P<warning>[CIWR]))\d+): '
-        r'(?P<message>.*)'
+        r'(?P<message>.*?)(?:\r?$)'
     )
     multiline = True
     line_col_base = (1, 0)
