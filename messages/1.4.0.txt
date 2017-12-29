@@ -1,0 +1,6 @@
+SublimeLinter-pylint 1.3.0
+--------------------------
+Inline settings will be deprecated in SublimeLinter 4. Please use pylint's
+own configuration files and inline comments instead.
+
+https://github.com/SublimeLinter/SublimeLinter3/blob/next/messages/4.0.0-rc.1.txt
