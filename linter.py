@@ -47,8 +47,6 @@ class Pylint(PythonLinter):
 
     error_stream = util.STREAM_STDOUT  # ignore missing config file message
     defaults = {
-        # allows the user to say whether he wants to see the error code
-        'show-codes': False,
         # paths to be added to sys.path through --init-hook
         'paths': [],
         # options for pylint
@@ -280,8 +278,6 @@ class Pylint(PythonLinter):
         except AttributeError:
             get_settings = getattr(self, 'get_view_settings')
 
-        show_codes = get_settings()['show-codes']
-
         if match:
             code = match.group('code')
             if code in self.messages_near:
@@ -309,7 +305,6 @@ class Pylint(PythonLinter):
                 if col == 0:
                     col = None
 
-            if show_codes:
-                message = code + ' ' + message
+            message = code + ' ' + message
 
         return match, line, col, error, warning, message, near
