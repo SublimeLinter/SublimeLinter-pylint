@@ -275,7 +275,12 @@ class Pylint(PythonLinter):
         """
         match, line, col, error, warning, message, near = super().split_match(match)
 
-        show_codes = self.get_merged_settings()['show-codes']
+        try:
+            get_settings = getattr(self, 'get_merged_settings')
+        except AttributeError:
+            get_settings = getattr(self, 'get_view_settings')
+
+        show_codes = get_settings()['show-codes']
 
         if match:
             code = match.group('code')
