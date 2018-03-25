@@ -1,33 +1,15 @@
-#
-# linter.py
-# Linter for SublimeLinter3, a code checking framework for Sublime Text 3
-#
-# Written by NotSqrt
-# Copyright (c) 2013 NotSqrt
-#
-# License: MIT
-#
-
-"""This module exports the Pylint plugin class."""
-
 import re
 from SublimeLinter.lint import PythonLinter, util, persist
 
 
 class Pylint(PythonLinter):
-    """Provides an interface to pylint."""
-
-    syntax = 'python'
     cmd = (
-        'pylint@python',
+        'pylint',
         '--msg-template=\'{line}:{column}:{msg_id}: {msg} ({symbol})\'',
         '--module-rgx=.*',  # don't check the module name
         '--reports=n',      # remove tables
         '--persistent=n',   # don't save the old score (no sense for temp)
     )
-    version_args = '--version'
-    version_re = r'pylint.* (?P<version>\d+\.\d+\.\d+),'
-    version_requirement = '>= 1.0'
     regex = (
         r'^(?P<line>\d+):(?P<col>\d+):'
         r'(?P<code>(?:(?P<error>[FE]\d+)|(?P<warning>[CIWR]\d+))): '
@@ -35,6 +17,12 @@ class Pylint(PythonLinter):
     )
     multiline = True
     line_col_base = (1, 0)
+    error_stream = util.STREAM_STDOUT  # ignore missing config file message
+    defaults = {
+        # paths to be added to sys.path through --init-hook
+        'paths': [],
+        'selector': 'source.python'
+    }
 
     @property
     def tempfile_suffix(self):
@@ -44,18 +32,6 @@ class Pylint(PythonLinter):
             return '-'
         else:
             return 'py'
-
-    error_stream = util.STREAM_STDOUT  # ignore missing config file message
-    defaults = {
-        # paths to be added to sys.path through --init-hook
-        'paths': [],
-        # options for pylint
-        '--disable=,': '',
-        '--enable=,': '',
-        '--rcfile=': '',
-    }
-    inline_overrides = ('enable', 'disable')
-    check_version = True
 
     #############
     # Try to extract a meaningful columns.
