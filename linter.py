@@ -279,6 +279,4 @@ class Pylint(PythonLinter):
                 if col == 0:
                     col = None
 
-            message = code + ' ' + message
-
         return match, line, col, error, warning, message, near
