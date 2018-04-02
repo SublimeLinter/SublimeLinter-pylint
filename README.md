@@ -29,11 +29,11 @@ Before using this plugin, you must ensure that `pylint` (1.0 or later) is instal
    c:\Python3x\Scripts\pip.exe install pylint
    ```
 
-In order for `pylint` to be executed by SublimeLinter, you must ensure that its path is available to SublimeLinter. The docs cover [troubleshooting PATH configuration](http://sublimelinter.readthedocs.io/en/latest/troubleshooting.html#finding-a-linter-executable).
+In order for `pylint` to be executed by SublimeLinter, you must ensure that its path is available to SublimeLinter. The docs cover [troubleshooting PATH configuration](http://sublimelinter.com/en/latest/troubleshooting.html#finding-a-linter-executable).
 
 
 ## Settings
-- SublimeLinter settings: http://sublimelinter.readthedocs.org/en/latest/settings.html
-- Linter settings: http://sublimelinter.readthedocs.org/en/latest/linter_settings.html
+- SublimeLinter settings: http://sublimelinter.com/en/latest/settings.html
+- Linter settings: http://sublimelinter.com/en/latest/linter_settings.html
 
 Pylint can be configured using `.pylintrc` configuration files and inline comments, more information in [the pylint docs](https://pylint.readthedocs.io/en/latest/faq.html#message-control).
