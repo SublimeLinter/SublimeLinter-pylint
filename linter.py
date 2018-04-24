@@ -1,6 +1,6 @@
 import logging
 import re
-from SublimeLinter.lint import PythonLinter, util, persist
+from SublimeLinter.lint import PythonLinter, persist
 
 
 logger = logging.getLogger('SublimeLinter.plugins.pylint')
