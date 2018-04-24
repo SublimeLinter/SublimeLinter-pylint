@@ -3,13 +3,6 @@ from SublimeLinter.lint import PythonLinter, util, persist
 
 
 class Pylint(PythonLinter):
-    cmd = (
-        'pylint',
-        '--msg-template=\'{line}:{column}:{msg_id}: {msg} ({symbol})\'',
-        '--module-rgx=.*',  # don't check the module name
-        '--reports=n',      # remove tables
-        '--persistent=n',   # don't save the old score (no sense for temp)
-    )
     regex = (
         r'^(?P<line>\d+):(?P<col>\d+):'
         r'(?P<code>(?:(?P<error>[FE]\d+)|(?P<warning>[CIWR]\d+))): '
@@ -25,6 +18,7 @@ class Pylint(PythonLinter):
         '--disable=,': '',
         '--enable=,': '',
         '--rcfile=': '',
+        '--init-hook=;': None
     }
 
     @property
@@ -35,6 +29,26 @@ class Pylint(PythonLinter):
             return '-'
         else:
             return 'py'
+
+    def cmd(self):
+        settings = self.get_view_settings()
+        if settings['init-hook'] is None:
+            paths = settings['paths']
+            if paths:
+                commands = ['import sys'] + [
+                    'sys.path.append({!r})'.format(path)
+                    for path in paths
+                ]
+                settings['init-hook'] = commands
+
+        return (
+            'pylint',
+            '--msg-template=\'{line}:{column}:{msg_id}: {msg} ({symbol})\'',
+            '--module-rgx=.*',  # don't check the module name
+            '--reports=n',      # remove tables
+            '--persistent=n',   # don't save the old score (no sense for temp)
+            '${args}'
+        )
 
     #############
     # Try to extract a meaningful columns.
@@ -230,19 +244,6 @@ class Pylint(PythonLinter):
         'W1300',
         'W1301',
     ]
-
-    def build_args(self, settings):
-        """Attach paths so pylint can find more modules."""
-        args = super().build_args(settings)
-        if settings.get('paths'):
-            init_hook = '''--init-hook=import sys;{}'''.format(
-                ''.join(
-                    'sys.path.append({!r});'.format(path)
-                    for path in settings.get('paths')
-                )
-            )
-            args.append(init_hook)
-        return args
 
     def split_match(self, match):
         """
