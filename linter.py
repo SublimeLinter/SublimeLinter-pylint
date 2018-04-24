@@ -18,8 +18,6 @@ class Pylint(PythonLinter):
         # paths to be added to sys.path through --init-hook
         'paths': [],
         'selector': 'source.python',
-        '--disable=,': '',
-        '--enable=,': '',
         '--rcfile=': '',
         '--init-hook=;': None
     }
