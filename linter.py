@@ -1,5 +1,9 @@
+import logging
 import re
 from SublimeLinter.lint import PythonLinter, util, persist
+
+
+logger = logging.getLogger('SublimeLinter.plugins.pylint')
 
 
 class Pylint(PythonLinter):
@@ -10,7 +14,6 @@ class Pylint(PythonLinter):
     )
     multiline = True
     line_col_base = (1, 0)
-    error_stream = util.STREAM_STDOUT  # ignore missing config file message
     defaults = {
         # paths to be added to sys.path through --init-hook
         'paths': [],
@@ -29,6 +32,14 @@ class Pylint(PythonLinter):
             return '-'
         else:
             return 'py'
+
+    def on_stderr(self, stderr):
+        stderr = re.sub(
+            'No config file found, using default configuration\n', '', stderr)
+
+        if stderr:
+            self.notify_failure()
+            logger.error(stderr)
 
     def cmd(self):
         settings = self.get_view_settings()
