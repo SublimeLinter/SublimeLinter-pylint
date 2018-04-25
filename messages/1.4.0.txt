@@ -1,6 +1,6 @@
-SublimeLinter-pylint 1.3.0
+SublimeLinter-pylint 1.4.0
 --------------------------
-Inline settings will be deprecated in SublimeLinter 4. Please use pylint's
-own configuration files and inline comments instead.
 
-https://github.com/SublimeLinter/SublimeLinter3/blob/next/messages/4.0.0-rc.1.txt
+Removed the args pair `disable/enable`. `disable` was disfunctional with the release of SublimeLinter 4 anyways. Use the generic `args` setting instead.
+
+See: http://www.sublimelinter.com/en/stable/linter_settings.html#args
