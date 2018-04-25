@@ -1,33 +1,12 @@
-#
-# linter.py
-# Linter for SublimeLinter3, a code checking framework for Sublime Text 3
-#
-# Written by NotSqrt
-# Copyright (c) 2013 NotSqrt
-#
-# License: MIT
-#
-
-"""This module exports the Pylint plugin class."""
-
+import logging
 import re
-from SublimeLinter.lint import PythonLinter, util, persist
+from SublimeLinter.lint import PythonLinter, persist
+
+
+logger = logging.getLogger('SublimeLinter.plugins.pylint')
 
 
 class Pylint(PythonLinter):
-    """Provides an interface to pylint."""
-
-    syntax = 'python'
-    cmd = (
-        'pylint@python',
-        '--msg-template=\'{line}:{column}:{msg_id}: {msg} ({symbol})\'',
-        '--module-rgx=.*',  # don't check the module name
-        '--reports=n',      # remove tables
-        '--persistent=n',   # don't save the old score (no sense for temp)
-    )
-    version_args = '--version'
-    version_re = r'pylint.* (?P<version>\d+\.\d+\.\d+),'
-    version_requirement = '>= 1.0'
     regex = (
         r'^(?P<line>\d+):(?P<col>\d+):'
         r'(?P<code>(?:(?P<error>[FE]\d+)|(?P<warning>[CIWR]\d+))): '
@@ -35,6 +14,13 @@ class Pylint(PythonLinter):
     )
     multiline = True
     line_col_base = (1, 0)
+    defaults = {
+        # paths to be added to sys.path through --init-hook
+        'paths': [],
+        'selector': 'source.python',
+        '--rcfile=': '',
+        '--init-hook=;': None
+    }
 
     @property
     def tempfile_suffix(self):
@@ -45,17 +31,33 @@ class Pylint(PythonLinter):
         else:
             return 'py'
 
-    error_stream = util.STREAM_STDOUT  # ignore missing config file message
-    defaults = {
-        # paths to be added to sys.path through --init-hook
-        'paths': [],
-        # options for pylint
-        '--disable=,': '',
-        '--enable=,': '',
-        '--rcfile=': '',
-    }
-    inline_overrides = ('enable', 'disable')
-    check_version = True
+    def on_stderr(self, stderr):
+        stderr = re.sub(
+            'No config file found, using default configuration\n', '', stderr)
+
+        if stderr:
+            self.notify_failure()
+            logger.error(stderr)
+
+    def cmd(self):
+        settings = self.get_view_settings()
+        if settings['init-hook'] is None:
+            paths = settings['paths']
+            if paths:
+                commands = ['import sys'] + [
+                    'sys.path.append({!r})'.format(path)
+                    for path in paths
+                ]
+                settings['init-hook'] = commands
+
+        return (
+            'pylint',
+            '--msg-template=\'{line}:{column}:{msg_id}: {msg} ({symbol})\'',
+            '--module-rgx=.*',  # don't check the module name
+            '--reports=n',      # remove tables
+            '--persistent=n',   # don't save the old score (no sense for temp)
+            '${args}'
+        )
 
     #############
     # Try to extract a meaningful columns.
@@ -252,19 +254,6 @@ class Pylint(PythonLinter):
         'W1301',
     ]
 
-    def build_args(self, settings):
-        """Attach paths so pylint can find more modules."""
-        args = super().build_args(settings)
-        if settings.get('paths'):
-            init_hook = '''--init-hook=import sys;{}'''.format(
-                ''.join(
-                    'sys.path.append({!r});'.format(path)
-                    for path in settings.get('paths')
-                )
-            )
-            args.append(init_hook)
-        return args
-
     def split_match(self, match):
         """
         Return the components of the error message.
@@ -299,7 +288,5 @@ class Pylint(PythonLinter):
                 # if it is an unknown error code, force it if column = 0
                 if col == 0:
                     col = None
-
-            message = code + ' ' + message
 
         return match, line, col, error, warning, message, near
