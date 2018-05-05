@@ -34,6 +34,7 @@ class Pylint(PythonLinter):
     def on_stderr(self, stderr):
         stderr = re.sub(
             'No config file found, using default configuration\n', '', stderr)
+        stderr = re.sub('Using config file .+\n', '', stderr)
 
         if stderr:
             self.notify_failure()
