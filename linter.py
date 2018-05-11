@@ -46,7 +46,7 @@ class Pylint(PythonLinter):
             paths = settings['paths']
             if paths:
                 commands = ['import sys'] + [
-                    'sys.path.append({!r})'.format(path)
+                    "sys.path.append('{}')".format(path)
                     for path in paths
                 ]
                 settings['init-hook'] = commands
