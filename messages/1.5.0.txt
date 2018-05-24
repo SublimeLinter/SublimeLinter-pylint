@@ -1,0 +1,8 @@
+SublimeLinter-pylint 1.5.0
+--------------------------
+
+Pylint now only runs on the actual files, i.e. on load and on save.
+
+This ensures it runs in a context where imports are available etc. Previously,
+it would try to switch behaviour on the fly, which would result in different
+errors depending on how pylint was run.
