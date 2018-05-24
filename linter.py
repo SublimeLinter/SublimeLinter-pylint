@@ -1,6 +1,6 @@
 import logging
 import re
-from SublimeLinter.lint import PythonLinter, persist
+from SublimeLinter.lint import PythonLinter
 
 
 logger = logging.getLogger('SublimeLinter.plugins.pylint')
@@ -14,6 +14,7 @@ class Pylint(PythonLinter):
     )
     multiline = True
     line_col_base = (1, 0)
+    tempfile_suffix = '-'
     defaults = {
         # paths to be added to sys.path through --init-hook
         'paths': [],
@@ -21,15 +22,6 @@ class Pylint(PythonLinter):
         '--rcfile=': '',
         '--init-hook=;': None
     }
-
-    @property
-    def tempfile_suffix(self):
-        """Use the real file if possible."""
-        mode = persist.settings.get('lint_mode', 'background')
-        if mode in ('load/save', 'save only') or not self.view.is_dirty():
-            return '-'
-        else:
-            return 'py'
 
     def on_stderr(self, stderr):
         stderr = re.sub(
