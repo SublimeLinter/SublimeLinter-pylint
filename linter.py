@@ -49,7 +49,8 @@ class Pylint(PythonLinter):
             '--module-rgx=.*',  # don't check the module name
             '--reports=n',      # remove tables
             '--persistent=n',   # don't save the old score (no sense for temp)
-            '${args}'
+            '${args}',
+            '${file_on_disk}'
         )
 
     #############
