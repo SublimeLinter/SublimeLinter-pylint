@@ -33,7 +33,7 @@ class Pylint(PythonLinter):
             logger.error(stderr)
 
     def cmd(self):
-        settings = self.get_view_settings()
+        settings = self.settings
         if settings['init-hook'] is None:
             paths = settings['paths']
             if paths:
