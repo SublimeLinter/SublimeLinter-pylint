@@ -27,6 +27,7 @@ class Pylint(PythonLinter):
         stderr = re.sub(
             'No config file found, using default configuration\n', '', stderr)
         stderr = re.sub('Using config file .+\n', '', stderr)
+        stderr = re.sub('(?m)^.*DeprecationWarning.*\n.*\n', '', stderr)
 
         if stderr:
             self.notify_failure()
