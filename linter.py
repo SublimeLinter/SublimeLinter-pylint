@@ -1,6 +1,8 @@
 import logging
+import os
 import re
 from SublimeLinter.lint import PythonLinter
+from SublimeLinter.lint.linter import substitute_variables
 
 
 logger = logging.getLogger('SublimeLinter.plugins.pylint')
@@ -20,7 +22,12 @@ class Pylint(PythonLinter):
         'paths': [],
         'selector': 'source.python',
         '--rcfile=': '',
-        '--init-hook=;': None
+        '--init-hook=;': None,
+
+        # Instead of sending the file *path* to pylint as an arg,
+        # convert it to a ('dotted') package name relative to the
+        # working dir.
+        'use_package_names': False
     }
 
     def on_stderr(self, stderr):
@@ -53,6 +60,26 @@ class Pylint(PythonLinter):
             '${args}',
             '${file_on_disk}'
         )
+
+    def finalize_cmd(self, cmd, context, **_kwargs):
+        # Note: `kwargs` and calling `super() is not necessary, bc they
+        # only implement deprecated features.
+
+        settings = self.get_view_settings()
+        if settings.get('use_package_names', False):
+            cwd = self.get_working_dir(settings)
+            filename = context.get('file_on_disk', '')
+            cwd, filename = map(os.path.normpath, (cwd, filename))
+
+            if os.path.commonprefix([cwd, filename]):
+                rel_path = os.path.relpath(filename, cwd)
+                package_name = '.'.join(
+                    os.path.splitext(rel_path)[0].split(os.path.sep)
+                )
+
+                cmd = cmd[:-1] + [package_name]
+
+        return substitute_variables(context, cmd)
 
     #############
     # Try to extract a meaningful columns.
