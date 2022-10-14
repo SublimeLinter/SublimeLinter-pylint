@@ -1,10 +1,50 @@
 import logging
 import re
-from pathlib import Path
+import os
+from itertools import chain, takewhile
 from SublimeLinter.lint import PythonLinter
 
 
 logger = logging.getLogger('SublimeLinter.plugins.pylint')
+
+HOME = os.path.expanduser('~')
+
+
+def paths_upwards(path):
+    while True:
+        yield path
+
+        next_path = os.path.dirname(path)
+        # Stop just before root in *nix systems
+        if next_path == '/':
+            return
+
+        if next_path == path:
+            return
+
+        path = next_path
+
+
+def paths_upwards_until_home(path):
+    return chain(takewhile(lambda p: p != HOME, paths_upwards(path)), [HOME])
+
+
+def find_project_root(src):
+    """Attempt to get the project root."""
+    for src in paths_upwards_until_home(src):
+        if os.path.exists(os.path.join(src, ".pylintrc")):
+            return src
+
+        if os.path.exists(os.path.join(src, "pyproject.toml")):
+            return src
+
+        if os.path.exists(os.path.join(src, ".git")):
+            return src
+
+        if os.path.exists(os.path.join(src, ".hg")):
+            return src
+
+    return src
 
 
 class Pylint(PythonLinter):
@@ -23,26 +63,6 @@ class Pylint(PythonLinter):
         '--rcfile=': '',
         '--init-hook=;': None
     }
-
-    def find_project_root(self, src):
-        """Attempt to get the project root."""
-        directory = src.parent
-
-        for directory in list(src.resolve().parents):
-
-            if (directory / ".pylintrc").is_file():
-                return directory
-
-            if (directory / "pyproject.toml").is_file():
-                return directory
-
-            if (directory / ".git").exists():
-                return directory
-
-            if (directory / ".hg").is_dir():
-                return directory
-
-        return directory
 
     def on_stderr(self, stderr):
         stderr = re.sub(
@@ -65,7 +85,7 @@ class Pylint(PythonLinter):
                 ]
                 settings['init-hook'] = commands
 
-        self.context['project_root'] = str(self.find_project_root(Path(self.view.file_name())))
+        self.context['project_root'] = find_project_root(self.view.file_name())
 
         return (
             'pylint',
