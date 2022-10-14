@@ -1,5 +1,6 @@
 import logging
 import re
+from pathlib import Path
 from SublimeLinter.lint import PythonLinter
 
 
@@ -23,6 +24,26 @@ class Pylint(PythonLinter):
         '--init-hook=;': None
     }
 
+    def find_project_root(self, src):
+        """Attempt to get the project root."""
+        directory = src.parent
+
+        for directory in list(src.resolve().parents):
+
+            if (directory / ".pylintrc").is_file():
+                return directory
+
+            if (directory / "pyproject.toml").is_file():
+                return directory
+
+            if (directory / ".git").exists():
+                return directory
+
+            if (directory / ".hg").is_dir():
+                return directory
+
+        return directory
+
     def on_stderr(self, stderr):
         stderr = re.sub(
             'No config file found, using default configuration\n', '', stderr)
@@ -43,6 +64,8 @@ class Pylint(PythonLinter):
                     for path in paths
                 ]
                 settings['init-hook'] = commands
+
+        self.context['project_root'] = str(self.find_project_root(Path(self.view.file_name())))
 
         return (
             'pylint',
