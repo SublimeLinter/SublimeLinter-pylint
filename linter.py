@@ -263,7 +263,11 @@ class Pylint(PythonLinter):
                 near = self.messages_near[code]
                 col = None
             elif code in self.messages_re:
-                message_match = re.search(self.messages_re[code], message)
+                # `--msg-template` appends ` ({symbol})` to the message, but
+                # the patterns here are written for the bare message; without
+                # this, a trailing `(?P<near>.*)` also captures the symbol.
+                bare_message = re.sub(r' \([\w-]+\)$', '', message)
+                message_match = re.search(self.messages_re[code], bare_message)
                 if message_match:
                     if 'near' in message_match.groupdict():
                         # 'near' will be more precise than 'col'
